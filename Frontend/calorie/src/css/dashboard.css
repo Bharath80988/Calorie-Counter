@@ -1,0 +1,115 @@
+
+.dashboard-container {
+    width: 100vw; 
+    max-width: 1400px; 
+    min-height: 100vh;
+    background-color: #0d0d0d;
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    padding: 30px;
+    margin: 0 auto; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.dashboard-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background: #1a1a1a;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 255, 255, 0.5);
+    width: 80%; 
+    text-align: center;
+}
+
+
+.user-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.user-name {
+    font-size: 1.4rem;
+    margin-right: 12px;
+    font-weight: bold;
+    color: cyan;
+    text-shadow: 0px 0px 5px cyan;
+}
+
+.user-logo {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    border: 2px solid cyan;
+    box-shadow: 0px 0px 8px cyan;
+}
+
+
+.food-input {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+    gap: 15px;
+    width: 80%;
+}
+
+.food-input input {
+    width: 350px;
+    padding: 12px;
+    border: 2px solid cyan;
+    background: #1e1e1e;
+    color: white;
+    border-radius: 5px;
+    font-size: 1rem;
+    text-align: center;
+}
+
+.food-input button {
+    padding: 12px 22px;
+    background: cyan;
+    border: none;
+    color: black;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.food-input button:hover {
+    background: white;
+    color: black;
+}
+
+
+.charts-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px; 
+    margin: 40px auto;
+    justify-content: center;
+    width: 90%; 
+}
+
+
+.chart {
+    background: #1e1e1e;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 12px rgba(0, 255, 255, 0.5);
+    text-align: center;
+    transition: 0.3s;
+    width: 90%; 
+    margin: auto; 
+}
+
+.chart:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 0px 18px rgba(0, 255, 255, 0.8);
+}

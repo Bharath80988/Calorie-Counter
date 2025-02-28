@@ -1,0 +1,71 @@
+.custom-meal-container {
+    max-width: 400px;
+    margin: auto;
+    background-color: black; /* Keep background black */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px cyan, 0 0 30px rgba(0, 255, 255, 0.5); /* Neon glow effect */
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.custom-meal-title {
+    color: cyan;
+    text-shadow: 0 0 10px cyan;
+}
+
+.custom-meal-form input,
+.custom-meal-form button {
+    width: 90%;
+    padding: 10px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.custom-meal-form input {
+    background: black;
+    color: cyan;
+    box-shadow: 0 0 5px cyan;
+    border: 1px solid cyan;
+}
+
+.custom-meal-form button {
+    background-color: cyan;
+    color: black;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.custom-meal-form button:hover {
+    box-shadow: 0 0 15px cyan;
+    transform: scale(1.05);
+}
+
+.custom-nutrition-info {
+    margin-top: 20px;
+    padding: 10px;
+    background: black;
+    border-radius: 5px;
+    box-shadow: 0 0 10px cyan;
+    color: cyan;
+}
+
+.custom-meal-item {
+    border-bottom: 1px solid cyan;
+    padding: 10px;
+}
+
+.custom-meal-item:last-child {
+    border-bottom: none;
+}
+
+.custom-error {
+    color: red;
+    font-weight: bold;
+}
