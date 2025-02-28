@@ -4,7 +4,7 @@ import Home from "./Components/dashboard.jsx";
 import Signup from "./Components/signup.jsx";
 import Login from "./Components/login.jsx";
 import NutritionFacts from "./Components/nutritionfacts.jsx";
-import AddMeal from "./Components/addMeal.jsx";
+import AddMeal from "./Components/addmeal.jsx";
 import CustomMeal from "./Components/custommeal.jsx";
 
 function App() {
