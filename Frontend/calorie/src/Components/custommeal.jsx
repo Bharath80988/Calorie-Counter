@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import "../css/custommeal.css"; // Separate CSS for Custom Meal
+import axios from "axios";
+import "../css/custommeal.css"; // Import CSS
 
 const CustomMeal = () => {
     const [mealName, setMealName] = useState("");
@@ -7,12 +8,11 @@ const CustomMeal = () => {
     const [protein, setProtein] = useState("");
     const [carbs, setCarbs] = useState("");
     const [fats, setFats] = useState("");
-    const [meals, setMeals] = useState([]); // Stores added meals
-    const [error, setError] = useState("");
+    const [message, setMessage] = useState("");
 
-    const handleAddMeal = () => {
+    const handleAddMeal = async () => {
         if (!mealName || !calories || !protein || !carbs || !fats) {
-            setError("⚠️ Please fill all fields.");
+            setMessage("⚠️ Please fill all fields.");
             return;
         }
 
@@ -21,21 +21,26 @@ const CustomMeal = () => {
             calories,
             protein,
             carbs,
-            fats
+            fat: fats, // Match backend schema
         };
 
-        setMeals([...meals, newMeal]); // Add meal to list
-        setError("");
-        setMealName("");
-        setCalories("");
-        setProtein("");
-        setCarbs("");
-        setFats("");
+        try {
+            await axios.post("http://localhost:3001/api/upload", newMeal);
+            setMessage("✅ Meal added successfully!");
+            setMealName("");
+            setCalories("");
+            setProtein("");
+            setCarbs("");
+            setFats("");
+        } catch (err) {
+            setMessage("⚠️ Error adding meal. Please try again.");
+            console.error("Error:", err);
+        }
     };
 
     return (
         <div className="custom-meal-container">
-            <h2 className="custom-meal-title">🍽️ Add Custom Meal</h2>
+            <h2 className="custom-meal-title">🍽️ Add Food</h2>
 
             <div className="custom-meal-form">
                 <input 
@@ -73,25 +78,10 @@ const CustomMeal = () => {
                     onChange={(e) => setFats(e.target.value)} 
                 />
 
-                <button onClick={handleAddMeal}>➕ Add Meal</button>
+                <button onClick={handleAddMeal}>➕ Add Food</button>
             </div>
 
-            {error && <p className="custom-error">{error}</p>}
-
-            {meals.length > 0 && (
-                <div className="custom-nutrition-info">
-                    <h3>🍎 Custom Meals</h3>
-                    {meals.map((meal, index) => (
-                        <div key={index} className="custom-meal-item">
-                            <h4>📌 {meal.name}</h4>
-                            <p><strong>🔥 Calories:</strong> {meal.calories} kcal</p>
-                            <p><strong>💪 Protein:</strong> {meal.protein} g</p>
-                            <p><strong>🥖 Carbs:</strong> {meal.carbs} g</p>
-                            <p><strong>🛢️ Fats:</strong> {meal.fats} g</p>
-                        </div>
-                    ))}
-                </div>
-            )}
+            {message && <p className="custom-message">{message}</p>}
         </div>
     );
 };

@@ -1,19 +1,19 @@
-
+/* Dashboard Container */
 .dashboard-container {
-    width: 100vw; 
-    max-width: 1400px; 
+    width: 100vw;
+    max-width: 1400px;
     min-height: 100vh;
     background-color: #0d0d0d;
     color: white;
     font-family: 'Poppins', sans-serif;
     padding: 30px;
-    margin: 0 auto; 
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-
+/* Header */
 .dashboard-header {
     display: flex;
     justify-content: center;
@@ -22,11 +22,11 @@
     background: #1a1a1a;
     border-radius: 10px;
     box-shadow: 0px 0px 10px rgba(0, 255, 255, 0.5);
-    width: 80%; 
+    width: 80%;
     text-align: center;
 }
 
-
+/* User Info */
 .user-info {
     display: flex;
     align-items: center;
@@ -50,28 +50,48 @@
     box-shadow: 0px 0px 8px cyan;
 }
 
-
-.food-input {
+/* Input & Activity Sections */
+.input-container {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
-    align-items: center;
-    margin: 20px 0;
-    gap: 15px;
-    width: 80%;
+    gap: 20px;
+    width: 90%;
+    margin-top: 20px;
+    padding: 20px;
+    background: #1a1a1a;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 255, 255, 0.5);
 }
 
-.food-input input {
-    width: 350px;
+/* Input Fields */
+.input-container input, 
+.input-container select {
+    width: 280px;
     padding: 12px;
     border: 2px solid cyan;
     background: #1e1e1e;
-    color: white;
+    color: cyan;
     border-radius: 5px;
     font-size: 1rem;
     text-align: center;
+    outline: none;
+    transition: 0.3s;
+    box-shadow: 0px 0px 10px rgba(0, 255, 255, 0.2);
 }
 
-.food-input button {
+.input-container input::placeholder {
+    color: rgba(0, 255, 255, 0.7);
+}
+
+.input-container input:focus, 
+.input-container select:focus {
+    border-color: white;
+    box-shadow: 0px 0px 12px cyan;
+}
+
+/* Buttons */
+.input-container button {
     padding: 12px 22px;
     background: cyan;
     border: none;
@@ -80,24 +100,31 @@
     border-radius: 5px;
     cursor: pointer;
     transition: 0.3s;
+    box-shadow: 0px 0px 10px rgba(0, 255, 255, 0.4);
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-.food-input button:hover {
+.input-container button:hover {
     background: white;
     color: black;
+    box-shadow: 0px 0px 15px cyan;
+    transform: scale(1.05);
 }
 
-
+/* Charts Container */
 .charts-container {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 30px; 
+    grid-template-columns: repeat(2, 1fr); /* Two charts per row */
+    gap: 100px; 
     margin: 40px auto;
     justify-content: center;
-    width: 90%; 
+    width: 90%;
 }
 
 
+/* Chart Styling */
 .chart {
     background: #1e1e1e;
     padding: 25px;
@@ -105,11 +132,100 @@
     box-shadow: 0px 0px 12px rgba(0, 255, 255, 0.5);
     text-align: center;
     transition: 0.3s;
-    width: 90%; 
-    margin: auto; 
+    width: 100%;
 }
 
 .chart:hover {
     transform: scale(1.05);
     box-shadow: 0px 0px 18px rgba(0, 255, 255, 0.8);
+}
+
+/* Responsive Design */
+@media screen and (max-width: 1024px) {
+    .charts-container {
+        grid-template-columns: 1fr; /* One chart per row on smaller screens */
+    }
+
+    .dashboard-header {
+        width: 95%;
+    }
+
+    .input-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .input-container input, 
+    .input-container select,
+    .input-container button {
+        width: 100%;
+    }
+}
+/* Food & Exercise Input Containers */
+.food-input,
+.exercise-input {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+    padding: 15px;
+    background: #1a1a1a;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 255, 255, 0.5);
+    align-items: center;
+    justify-content: center;
+    width: 80%;
+}
+
+/* Input Fields */
+.food-input input,
+.exercise-input input,
+.exercise-input select {
+    width: 250px;
+    padding: 12px;
+    border: 2px solid cyan;
+    background: #1e1e1e;
+    color: cyan;
+    border-radius: 5px;
+    font-size: 1rem;
+    text-align: center;
+    outline: none;
+    transition: 0.3s;
+    box-shadow: 0px 0px 10px rgba(0, 255, 255, 0.2);
+}
+
+.food-input input::placeholder,
+.exercise-input input::placeholder {
+    color: rgba(0, 255, 255, 0.7);
+}
+
+.food-input input:focus,
+.exercise-input input:focus,
+.exercise-input select:focus {
+    border-color: white;
+    box-shadow: 0px 0px 12px cyan;
+}
+
+/* Buttons */
+.food-input button,
+.exercise-input button {
+    padding: 12px 22px;
+    background: cyan;
+    border: none;
+    color: black;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0px 0px 10px rgba(0, 255, 255, 0.4);
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.food-input button:hover,
+.exercise-input button:hover {
+    background: white;
+    color: black;
+    box-shadow: 0px 0px 15px cyan;
+    transform: scale(1.05);
 }

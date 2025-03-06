@@ -58,7 +58,33 @@
     color: cyan;
 }
 
+/* Styling for the Add Meal button */
+.nutrition-info button {
+    width: 90%;
+    padding: 10px;
+    background-color: cyan;
+    color: black;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 10px;
+}
+
+.nutrition-info button:hover {
+    box-shadow: 0 0 15px cyan;
+    transform: scale(1.05);
+}
+
 .error {
     color: red;
     font-weight: bold;
+}
+
+.success {
+    color: cyan;
+    font-weight: bold;
+    text-shadow: 0 0 10px cyan;
 }

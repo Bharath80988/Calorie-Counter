@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import "../css/dashboard.css";
 import userPic from "../assets/picofme.png";
 import {
@@ -8,41 +9,110 @@ import {
   Tooltip, Legend, XAxis, YAxis, CartesianGrid, ResponsiveContainer
 } from "recharts";
 
-// Data for charts
-const calorieData = [
-  { day: "Mon", calories: 1800 },
-  { day: "Tue", calories: 2000 },
-  { day: "Wed", calories: 2200 },
-  { day: "Thu", calories: 2100 },
-  { day: "Fri", calories: 1900 },
-  { day: "Sat", calories: 2500 },
-  { day: "Sun", calories: 2300 }
-];
-
-const exerciseData = [
-  { day: "Mon", minutes: 30 },
-  { day: "Tue", minutes: 45 },
-  { day: "Wed", minutes: 60 },
-  { day: "Thu", minutes: 40 },
-  { day: "Fri", minutes: 50 },
-  { day: "Sat", minutes: 70 },
-  { day: "Sun", minutes: 60 }
-];
-
-const weeklyReport = [
-  { name: "Calories Burned", value: 5000 },
-  { name: "Calories Consumed", value: 12000 }
-];
-
-const exercisePieData = [
-  { name: "Light Exercise", value: 120 },
-  { name: "Moderate Exercise", value: 180 },
-  { name: "Intense Exercise", value: 210 }
-];
-
 const COLORS = ["#00FFFF", "#FF4500", "#FFD700"];
 
 const Dashboard = () => {
+  const [calorieData, setCalorieData] = useState([
+    { day: "Mon", calories: 0 },
+    { day: "Tue", calories: 0 },
+    { day: "Wed", calories: 0 },
+    { day: "Thu", calories: 0 },
+    { day: "Fri", calories: 0 },
+    { day: "Sat", calories: 0 },
+    { day: "Sun", calories: 0 }
+  ]);
+
+  const [exerciseData, setExerciseData] = useState([
+    { day: "Mon", minutes: 0 },
+    { day: "Tue", minutes: 0 },
+    { day: "Wed", minutes: 0 },
+    { day: "Thu", minutes: 0 },
+    { day: "Fri", minutes: 0 },
+    { day: "Sat", minutes: 0 },
+    { day: "Sun", minutes: 0 }
+  ]);
+
+  const [weeklyReport, setWeeklyReport] = useState([
+    { name: "Calories Burned", value: 0 },
+    { name: "Calories Consumed", value: 0 }
+  ]);
+
+  const [exercisePieData, setExercisePieData] = useState([
+    { name: "Light Exercise", value: 0 },
+    { name: "Moderate Exercise", value: 0 },
+    { name: "Intense Exercise", value: 0 }
+  ]);
+
+  const [foodItem, setFoodItem] = useState("");
+  const [exerciseType, setExerciseType] = useState("Light Exercise");
+  const [exerciseDuration, setExerciseDuration] = useState("");
+
+  // Function to fetch calories for food item
+  const addFoodItem = async () => {
+    if (!foodItem) return;
+
+    try {
+      const response = await axios.get(`http://localhost:3001/api/meals?name=${foodItem}`);
+      const meal = response.data;
+
+      if (meal.length > 0) {
+        const calories = meal[0].calories;
+        updateCalorieData(calories);
+      } else {
+        alert("Food item not found in database!");
+      }
+    } catch (error) {
+      console.error("Error fetching meal:", error);
+    }
+
+    setFoodItem(""); 
+  };
+
+  // Update weekly calorie data
+  const updateCalorieData = (newCalories) => {
+    const today = new Date().getDay();
+    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const dayName = days[today];
+
+    const updatedData = calorieData.map((data) =>
+      data.day === dayName ? { ...data, calories: data.calories + newCalories } : data
+    );
+
+    setCalorieData(updatedData);
+
+    setWeeklyReport((prevReport) => [
+      { name: "Calories Burned", value: prevReport[0].value },
+      { name: "Calories Consumed", value: prevReport[1].value + newCalories }
+    ]);
+  };
+
+  // Update exercise data
+  const addExercise = () => {
+    const duration = parseInt(exerciseDuration);
+    if (!duration || duration <= 0) return;
+
+    const today = new Date().getDay();
+    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const dayName = days[today];
+
+    const updatedExerciseData = exerciseData.map((data) =>
+      data.day === dayName ? { ...data, minutes: data.minutes + duration } : data
+    );
+    setExerciseData(updatedExerciseData);
+
+    const updatedPieData = exercisePieData.map((item) =>
+      item.name === exerciseType ? { ...item, value: item.value + duration } : item
+    );
+    setExercisePieData(updatedPieData);
+
+    setWeeklyReport((prevReport) => [
+      { name: "Calories Burned", value: prevReport[0].value + duration * 5 },
+      { name: "Calories Consumed", value: prevReport[1].value }
+    ]);
+
+    setExerciseDuration(""); 
+  };
+
   return (
     <div className="dashboard-container">
       <div className="user-info">
@@ -55,28 +125,43 @@ const Dashboard = () => {
         <h2>Health Dashboard</h2>
       </header>
 
-      {/* Input Bar for Food Tracking */}
+      {/* Food Input */}
       <div className="food-input">
-        <input type="text" placeholder="Enter food item..." />
-        <button>Add</button>
+        <input
+          type="text"
+          placeholder="Enter food item..."
+          value={foodItem}
+          onChange={(e) => setFoodItem(e.target.value)}
+        />
+        <button onClick={addFoodItem}>Add</button>
       </div>
 
-      {/* Charts Section - Pie Charts First */}
+      {/* Exercise Input */}
+      <div className="exercise-input">
+        <select value={exerciseType} onChange={(e) => setExerciseType(e.target.value)}>
+          <option value="Light Exercise">Light Exercise</option>
+          <option value="Moderate Exercise">Moderate Exercise</option>
+          <option value="Intense Exercise">Intense Exercise</option>
+        </select>
+        <input
+          type="number"
+          placeholder="Minutes"
+          value={exerciseDuration}
+          onChange={(e) => setExerciseDuration(e.target.value)}
+        />
+        <button onClick={addExercise}>Add</button>
+      </div>
+
+      {/* Charts Section */}
       <div className="charts-container">
-        {/* Weekly Summary Pie Chart */}
+        {/* 1. Weekly Summary Pie Chart */}
         <div className="chart">
           <h3>Weekly Report</h3>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Tooltip />
               <Legend />
-              <Pie
-                data={weeklyReport}
-                cx="50%" cy="50%"
-                outerRadius={90}
-                dataKey="value"
-                label
-              >
+              <Pie data={weeklyReport} cx="50%" cy="50%" outerRadius={90} dataKey="value" label>
                 {weeklyReport.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
@@ -85,20 +170,14 @@ const Dashboard = () => {
           </ResponsiveContainer>
         </div>
 
-        {/* Exercise Pie Chart */}
+        {/* 2. Exercise Breakdown Pie Chart */}
         <div className="chart">
           <h3>Exercise Intensity Breakdown</h3>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Tooltip />
               <Legend />
-              <Pie
-                data={exercisePieData}
-                cx="50%" cy="50%"
-                outerRadius={90}
-                dataKey="value"
-                label
-              >
+              <Pie data={exercisePieData} cx="50%" cy="50%" outerRadius={90} dataKey="value" label>
                 {exercisePieData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
@@ -107,12 +186,11 @@ const Dashboard = () => {
           </ResponsiveContainer>
         </div>
 
-        {/* Exercise Time Bar Chart */}
+        {/* 3. Exercise Time Bar Chart */}
         <div className="chart">
           <h3>Exercise Time (Minutes per Day)</h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={exerciseData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(0, 255, 255, 0.3)" />
               <XAxis dataKey="day" stroke="cyan" />
               <YAxis stroke="cyan" />
               <Tooltip />
@@ -122,12 +200,11 @@ const Dashboard = () => {
           </ResponsiveContainer>
         </div>
 
-        {/* Calorie Intake Line Chart */}
+        {/* 4. Weekly Calorie Intake Line Chart */}
         <div className="chart">
-          <h3>Calorie Intake (Daily)</h3>
+          <h3>Weekly Calorie Intake</h3>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={calorieData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(0, 255, 255, 0.3)" />
               <XAxis dataKey="day" stroke="cyan" />
               <YAxis stroke="cyan" />
               <Tooltip />

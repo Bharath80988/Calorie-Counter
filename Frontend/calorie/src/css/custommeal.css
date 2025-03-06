@@ -69,3 +69,9 @@
     color: red;
     font-weight: bold;
 }
+.custom-message {
+    color: cyan;
+    text-shadow: 0 0 10px cyan;
+    margin-top: 10px;
+    font-weight: bold;
+}

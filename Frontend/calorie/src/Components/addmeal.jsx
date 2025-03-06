@@ -7,6 +7,7 @@ const AddMeal = () => {
     const [type, setType] = useState("");
     const [nutrition, setNutrition] = useState(null);
     const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
 
     const fetchNutritionData = async () => {
         if (!mealName) {
@@ -45,18 +46,60 @@ const AddMeal = () => {
             const nutrients = productData.product.nutriments;
 
             setNutrition({
+                name: mealName,
+                cuisine: cuisine, // Add cuisine
+                type: type,       // Add type
                 calories: nutrients["energy-kcal_100g"] || "N/A",
                 protein: nutrients["proteins_100g"] || "N/A",
                 carbs: nutrients["carbohydrates_100g"] || "N/A",
-                fats: nutrients["fat_100g"] || "N/A"
+                fat: nutrients["fat_100g"] || "N/A" // Change from fats to fat
             });
+            
 
             setError("");
+            setSuccess("");
         } catch (err) {
             console.error("Error fetching nutrition data:", err);
             setError("⚠️ Error fetching data.");
         }
     };
+
+    const addMealToDatabase = async () => {
+        if (!nutrition) {
+            setError("⚠️ No nutrition data to save.");
+            return;
+        }
+    
+        try {
+            const response = await fetch("http://localhost:3001/api/upload", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    name: nutrition.name,
+                    calories: nutrition.calories,
+                    protein: nutrition.protein,
+                    fat: nutrition.fat,  // Ensure it matches the schema
+                    carbs: nutrition.carbs
+                })
+            });
+    
+            const data = await response.json();
+    
+            if (response.ok) {
+                setSuccess("✅ Meal added successfully!");
+                setError("");
+            } else {
+                setError(`⚠️ ${data.message}`);
+            }
+        } catch (err) {
+            console.error("Error saving meal:", err);
+            setError("⚠️ Error saving meal.");
+        }
+    };
+    
+    
 
     return (
         <div className="add-meal-container">
@@ -89,6 +132,7 @@ const AddMeal = () => {
             </div>
 
             {error && <p className="error">{error}</p>}
+            {success && <p className="success">{success}</p>}
 
             {nutrition && (
                 <div className="nutrition-info">
@@ -97,6 +141,8 @@ const AddMeal = () => {
                     <p><strong>💪 Protein:</strong> {nutrition.protein} g</p>
                     <p><strong>🥖 Carbs:</strong> {nutrition.carbs} g</p>
                     <p><strong>🛢️ Fats:</strong> {nutrition.fats} g</p>
+                    
+                    <button onClick={addMealToDatabase}>➕ Add Meal</button>
                 </div>
             )}
         </div>
