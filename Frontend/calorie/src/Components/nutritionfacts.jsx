@@ -5,15 +5,16 @@ const NutritionPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [foodItems, setFoodItems] = useState([]);
 
-  // ➤ Fetch data from backend when component loads
   useEffect(() => {
-    fetch("http://localhost:3001/api/meals")  // Make sure this matches your backend port
-      .then(response => response.json())
-      .then(data => setFoodItems(data))
-      .catch(error => console.error("Error fetching meals:", error));
+    fetch("http://localhost:3001/api/meals")
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Fetched Meals:", data); // Debugging
+        setFoodItems(data);
+      })
+      .catch((error) => console.error("Error fetching meals:", error));
   }, []);
 
-  // ➤ Filter food items based on search input
   const filteredFoods = foodItems.filter((food) =>
     food.name.toLowerCase().includes(searchTerm.toLowerCase())
   );

@@ -1,99 +1,94 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const axios = require("axios");
-require("dotenv").config();
-const Meal = require("./Models/meals");
-const User = require("./Models/user");
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 
-const mongoURI = process.env.MONGO_URI || "mongodb://localhost:27017/nutritionDB";
-mongoose
-  .connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log("MongoDB Connected"))
-  .catch((err) => console.error("MongoDB Connection Error:", err));
+// 🔹 Connect to MongoDB
+mongoose.connect("mongodb://127.0.0.1:27017/nutritionDB", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => console.log("✅ Connected to MongoDB"))
+.catch((err) => console.error("❌ MongoDB Connection Error:", err));
 
-// Fetch meal by name or all meals
+// 🔹 Meal Schema & Model
+const MealSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  calories: Number,
+  protein: Number,
+  fat: Number,
+  carbs: Number,
+});
+
+const Meal = mongoose.model("Meal", MealSchema);
+
+// ------------------- 🔹 ROUTES ------------------- //
+
+// ✅ **Get All Meals**
 app.get("/api/meals", async (req, res) => {
   try {
-    const { name } = req.query;
-
-    if (name) {
-      // Search for a meal by its name (case-insensitive)
-      const meal = await Meal.find({ name: { $regex: new RegExp(`^${name}$`, "i") } });
-
-      if (meal.length === 0) {
-        return res.status(404).json({ error: "Meal not found in the database" });
-      }
-
-      return res.json(meal);
-    }
-
-    // If no name is provided, return all meals
     const meals = await Meal.find();
-    if (meals.length === 0) {
-      return res.status(404).json({ error: "No meals found in the database" });
-    }
+    if (!meals.length) return res.status(404).json({ error: "No meals found" });
 
     res.json(meals);
   } catch (err) {
-    res.status(500).json({ error: "Error fetching meals", details: err.message });
+    res.status(500).json({ error: "Failed to fetch meals", details: err.message });
   }
 });
 
-// Fetch user details including totalCalories
-app.get("/api/user/:id", async (req, res) => {
+// ✅ **Search Meals (by name)**
+app.get("/api/meals/search", async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
-    if (!user) return res.status(404).json({ error: "User not found" });
-    res.json(user);
+    const { query } = req.query;
+    const meals = await Meal.find({ name: { $regex: query, $options: "i" } });
+
+    if (!meals.length) return res.status(404).json({ error: "No matching meals found" });
+
+    res.json(meals);
   } catch (err) {
-    res.status(500).json({ error: "Error fetching user", details: err.message });
+    res.status(500).json({ error: "Failed to search meals", details: err.message });
   }
 });
 
-// Add meal & update user calories
-app.post("/api/upload", async (req, res) => {
+// ✅ **Add a Meal**
+app.post("/api/meals", async (req, res) => {
   try {
-    const { userId, name } = req.body;
+    const { name, calories, protein, fat, carbs } = req.body;
 
-    if (!userId || !name) {
-      return res.status(400).json({ error: "User ID and food name are required" });
+    if (!name || calories === undefined || protein === undefined || fat === undefined || carbs === undefined) {
+      return res.status(400).json({ error: "All fields are required!" });
     }
 
-    // Fetch user
-    const user = await User.findById(userId);
-    if (!user) return res.status(404).json({ error: "User not found" });
-
-    // Fetch meal details from MealDB API
-    const response = await axios.get(`https://www.themealdb.com/api/json/v1/1/search.php?s=${name}`);
-    
-    if (!response.data.meals) {
-      return res.status(404).json({ error: "Meal not found in MealDB" });
-    }
-
-    // Extract nutrition data (simulated)
-    const mealData = response.data.meals[0];
-    const calories = Math.floor(Math.random() * 500) + 100;
-    const protein = Math.floor(Math.random() * 30) + 5;
-    const fat = Math.floor(Math.random() * 20) + 3;
-    const carbs = Math.floor(Math.random() * 50) + 10;
-
-    // Save meal in the database
-    const newMeal = new Meal({ userId, name, calories, protein, fat, carbs });
+    const newMeal = new Meal({ name, calories, protein, fat, carbs });
     await newMeal.save();
 
-    // Update user's totalCalories
-    await User.findByIdAndUpdate(userId, { $inc: { totalCalories: calories } });
-
-    res.status(201).json({ message: "Meal added successfully!", meal: newMeal });
+    res.status(201).json({ message: "Meal added successfully" });
   } catch (err) {
-    res.status(500).json({ error: "Error uploading meal", details: err.message });
+    res.status(500).json({ error: "Error adding meal", details: err.message });
   }
 });
 
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// ✅ **Delete a Meal**
+app.delete("/api/meals/:id", async (req, res) => {
+  try {
+    const meal = await Meal.findByIdAndDelete(req.params.id);
+    if (!meal) return res.status(404).json({ error: "Meal not found" });
+
+    res.json({ message: "Meal deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ error: "Error deleting meal", details: err.message });
+  }
+});
+
+// 🔹 Start Server
+const PORT = 3001;
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+const cors = require("cors");
+
+app.use(cors({
+  origin: ["http://localhost:3000", "http://localhost:5173"],  // Allow both ports
+  credentials: true
+}));
