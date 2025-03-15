@@ -47,14 +47,11 @@ const AddMeal = () => {
 
             setNutrition({
                 name: mealName,
-                cuisine: cuisine, // Add cuisine
-                type: type,       // Add type
                 calories: nutrients["energy-kcal_100g"] || "N/A",
                 protein: nutrients["proteins_100g"] || "N/A",
                 carbs: nutrients["carbohydrates_100g"] || "N/A",
-                fat: nutrients["fat_100g"] || "N/A" // Change from fats to fat
+                fat: nutrients["fat_100g"] || "N/A" 
             });
-            
 
             setError("");
             setSuccess("");
@@ -69,9 +66,9 @@ const AddMeal = () => {
             setError("⚠️ No nutrition data to save.");
             return;
         }
-    
+
         try {
-            const response = await fetch("http://localhost:3001/api/upload", {
+            const response = await fetch("http://localhost:3001/api/meals", {  
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -80,26 +77,24 @@ const AddMeal = () => {
                     name: nutrition.name,
                     calories: nutrition.calories,
                     protein: nutrition.protein,
-                    fat: nutrition.fat,  // Ensure it matches the schema
+                    fat: nutrition.fat,  
                     carbs: nutrition.carbs
                 })
             });
-    
+
             const data = await response.json();
-    
+
             if (response.ok) {
                 setSuccess("✅ Meal added successfully!");
                 setError("");
             } else {
-                setError(`⚠️ ${data.message}`);
+                setError(`⚠️ ${data.error}`);
             }
         } catch (err) {
             console.error("Error saving meal:", err);
             setError("⚠️ Error saving meal.");
         }
     };
-    
-    
 
     return (
         <div className="add-meal-container">
@@ -140,8 +135,8 @@ const AddMeal = () => {
                     <p><strong>🔥 Calories:</strong> {nutrition.calories} kcal</p>
                     <p><strong>💪 Protein:</strong> {nutrition.protein} g</p>
                     <p><strong>🥖 Carbs:</strong> {nutrition.carbs} g</p>
-                    <p><strong>🛢️ Fats:</strong> {nutrition.fats} g</p>
-                    
+                    <p><strong>🛢️ Fat:</strong> {nutrition.fat} g</p> {/* Fixed `fats` to `fat` */}
+
                     <button onClick={addMealToDatabase}>➕ Add Meal</button>
                 </div>
             )}

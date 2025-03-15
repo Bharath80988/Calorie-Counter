@@ -1,33 +1,21 @@
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const Meal = require("./Models/meals"); 
 
 const app = express();
 app.use(express.json());
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(cors({ origin: ["http://localhost:3000", "http://localhost:5173"], credentials: true }));
 
-// 🔹 Connect to MongoDB
-mongoose.connect("mongodb://127.0.0.1:27017/nutritionDB", {
+mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
 .then(() => console.log("✅ Connected to MongoDB"))
 .catch((err) => console.error("❌ MongoDB Connection Error:", err));
 
-// 🔹 Meal Schema & Model
-const MealSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  calories: Number,
-  protein: Number,
-  fat: Number,
-  carbs: Number,
-});
-
-const Meal = mongoose.model("Meal", MealSchema);
-
-// ------------------- 🔹 ROUTES ------------------- //
-
-// ✅ **Get All Meals**
+// 📌 Get all meals
 app.get("/api/meals", async (req, res) => {
   try {
     const meals = await Meal.find();
@@ -39,56 +27,53 @@ app.get("/api/meals", async (req, res) => {
   }
 });
 
-// ✅ **Search Meals (by name)**
-app.get("/api/meals/search", async (req, res) => {
+// 📌 Get a specific meal by name
+app.get("/api/meals/:name", async (req, res) => {
   try {
-    const { query } = req.query;
-    const meals = await Meal.find({ name: { $regex: query, $options: "i" } });
+    const mealName = req.params.name;
+    const meal = await Meal.find({ name: mealName });
 
-    if (!meals.length) return res.status(404).json({ error: "No matching meals found" });
+    if (!meal.length) return res.status(404).json({ error: "Meal not found" });
 
-    res.json(meals);
+    res.json(meal);
   } catch (err) {
-    res.status(500).json({ error: "Failed to search meals", details: err.message });
+    res.status(500).json({ error: "Failed to fetch meal", details: err.message });
   }
 });
 
-// ✅ **Add a Meal**
+// 📌 Add a meal
 app.post("/api/meals", async (req, res) => {
   try {
-    const { name, calories, protein, fat, carbs } = req.body;
-
-    if (!name || calories === undefined || protein === undefined || fat === undefined || carbs === undefined) {
-      return res.status(400).json({ error: "All fields are required!" });
+    const { name, calories, protein, carbs, fat } = req.body;
+    if (!name || !calories || !protein || !carbs || !fat) {
+      return res.status(400).json({ error: "⚠️ All fields are required" });
     }
 
-    const newMeal = new Meal({ name, calories, protein, fat, carbs });
+    const newMeal = new Meal({ name, calories, protein, carbs, fat });
     await newMeal.save();
 
-    res.status(201).json({ message: "Meal added successfully" });
+    res.status(201).json({ message: "✅ Meal added successfully!" });
   } catch (err) {
-    res.status(500).json({ error: "Error adding meal", details: err.message });
+    res.status(500).json({ error: "⚠️ Failed to add meal", details: err.message });
   }
 });
 
-// ✅ **Delete a Meal**
-app.delete("/api/meals/:id", async (req, res) => {
+// 📌 Add a custom meal
+app.post("/api/custom-meal", async (req, res) => {
   try {
-    const meal = await Meal.findByIdAndDelete(req.params.id);
-    if (!meal) return res.status(404).json({ error: "Meal not found" });
+    const { name, calories, protein, carbs, fat } = req.body;
+    if (!name || !calories || !protein || !carbs || !fat) {
+      return res.status(400).json({ error: "⚠️ All fields are required" });
+    }
 
-    res.json({ message: "Meal deleted successfully" });
-  } catch (err) {
-    res.status(500).json({ error: "Error deleting meal", details: err.message });
+    const newMeal = new Meal({ name, calories, protein, carbs, fat });
+    await newMeal.save();
+
+    res.status(201).json({ message: "✅ Custom meal added successfully!" });
+  } catch (error) {
+    res.status(500).json({ error: "⚠️ Failed to add custom meal", details: error.message });
   }
 });
 
-// 🔹 Start Server
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
-const cors = require("cors");
-
-app.use(cors({
-  origin: ["http://localhost:3000", "http://localhost:5173"],  // Allow both ports
-  credentials: true
-}));

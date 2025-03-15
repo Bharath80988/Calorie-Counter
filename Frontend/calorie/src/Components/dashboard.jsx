@@ -52,7 +52,7 @@ const Dashboard = () => {
     if (!foodItem) return;
 
     try {
-      const response = await axios.get(`http://localhost:3001/api/meals?name=${foodItem}`);
+      const response = await axios.get(`http://localhost:3001/api/meals/${foodItem}`);  
       const meal = response.data;
 
       if (meal.length > 0) {
