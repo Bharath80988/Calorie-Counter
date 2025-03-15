@@ -13,7 +13,8 @@
     "nodemon": "^3.1.9"
   },
   "scripts": {
-    "start": "nodemon index.js",
+    "Build": "npm install",
+    "start": "node index.js",
     "dev": "nodemon index.js"
   }
 }
