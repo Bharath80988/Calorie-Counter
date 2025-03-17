@@ -11,7 +11,7 @@ const AddMeal = () => {
 
     const fetchNutritionData = async () => {
         if (!mealName) {
-            setError("⚠️ Please enter a meal name.");
+            setError("Please enter a meal name.");
             return;
         }
 
@@ -24,7 +24,7 @@ const AddMeal = () => {
 
             if (!searchData.products || searchData.products.length === 0) {
                 setNutrition(null);
-                setError("⚠️ No products found for this food.");
+                setError("No products found for this food.");
                 return;
             }
 
@@ -39,7 +39,7 @@ const AddMeal = () => {
 
             if (!productData.product || !productData.product.nutriments) {
                 setNutrition(null);
-                setError("⚠️ Nutrition data not found.");
+                setError("Nutrition data not found.");
                 return;
             }
 
@@ -57,13 +57,13 @@ const AddMeal = () => {
             setSuccess("");
         } catch (err) {
             console.error("Error fetching nutrition data:", err);
-            setError("⚠️ Error fetching data.");
+            setError("Error fetching data.");
         }
     };
 
     const addMealToDatabase = async () => {
         if (!nutrition) {
-            setError("⚠️ No nutrition data to save.");
+            setError("No nutrition data to save.");
             return;
         }
 
@@ -85,20 +85,20 @@ const AddMeal = () => {
             const data = await response.json();
 
             if (response.ok) {
-                setSuccess("✅ Meal added successfully!");
+                setSuccess("Meal added successfully!");
                 setError("");
             } else {
                 setError(`⚠️ ${data.error}`);
             }
         } catch (err) {
             console.error("Error saving meal:", err);
-            setError("⚠️ Error saving meal.");
+            setError("Error saving meal.");
         }
     };
 
     return (
         <div className="add-meal-container">
-            <h2 className="add-meal-title">🍽️ Add Meal</h2>
+            <h2 className="add-meal-title">Add Meal</h2>
 
             <div className="add-meal-form">
                 <input 
@@ -123,7 +123,7 @@ const AddMeal = () => {
                     <option value="meal">Meal</option>
                 </select>
 
-                <button onClick={fetchNutritionData}>🔍 Search</button>
+                <button onClick={fetchNutritionData}>Search</button>
             </div>
 
             {error && <p className="error">{error}</p>}
@@ -131,13 +131,13 @@ const AddMeal = () => {
 
             {nutrition && (
                 <div className="nutrition-info">
-                    <h3>🍎 Nutrition Details (per 100g)</h3>
-                    <p><strong>🔥 Calories:</strong> {nutrition.calories} kcal</p>
-                    <p><strong>💪 Protein:</strong> {nutrition.protein} g</p>
-                    <p><strong>🥖 Carbs:</strong> {nutrition.carbs} g</p>
-                    <p><strong>🛢️ Fat:</strong> {nutrition.fat} g</p> {/* Fixed `fats` to `fat` */}
+                    <h3>Nutrition Details (per 100g)</h3>
+                    <p><strong>Calories:</strong> {nutrition.calories} kcal</p>
+                    <p><strong>Protein:</strong> {nutrition.protein} g</p>
+                    <p><strong>Carbs:</strong> {nutrition.carbs} g</p>
+                    <p><strong>Fat:</strong> {nutrition.fat} g</p> 
 
-                    <button onClick={addMealToDatabase}>➕ Add Meal</button>
+                    <button onClick={addMealToDatabase}>Add Meal</button>
                 </div>
             )}
         </div>

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import "../css/custommeal.css"; // Import CSS
+import "../css/custommeal.css"; 
 
 const CustomMeal = () => {
     const [mealName, setMealName] = useState("");
@@ -12,7 +12,7 @@ const CustomMeal = () => {
 
     const handleAddMeal = async () => {
         if (!mealName || !calories || !protein || !carbs || !fat) {
-            setMessage("⚠️ Please fill all fields.");
+            setMessage("Please fill all fields.");
             return;
         }
 
@@ -26,21 +26,21 @@ const CustomMeal = () => {
 
         try {
             await axios.post("http://localhost:3001/api/custom-meal", newMeal);
-            setMessage("✅ Meal added successfully!");
+            setMessage("Meal added successfully!");
             setMealName("");
             setCalories("");
             setProtein("");
             setCarbs("");
             setFat(""); 
         } catch (err) {
-            setMessage("⚠️ Error adding meal. Please try again.");
+            setMessage("Error adding meal. Please try again.");
             console.error("Error:", err);
         }
     };
 
     return (
         <div className="custom-meal-container">
-            <h2 className="custom-meal-title">🍽️ Add Custom Meal</h2>
+            <h2 className="custom-meal-title">Add Custom Meal</h2>
 
             <div className="custom-meal-form">
                 <input 
@@ -78,7 +78,7 @@ const CustomMeal = () => {
                     onChange={(e) => setFat(e.target.value)} 
                 />
 
-                <button onClick={handleAddMeal}>➕ Add Meal</button>
+                <button onClick={handleAddMeal}>Add Meal</button>
             </div>
 
             {message && <p className="custom-message">{message}</p>}

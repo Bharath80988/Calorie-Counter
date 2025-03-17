@@ -12,10 +12,10 @@ mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
-.then(() => console.log("✅ Connected to MongoDB"))
-.catch((err) => console.error("❌ MongoDB Connection Error:", err));
+.then(() => console.log("Connected to MongoDB"))
+.catch((err) => console.error("MongoDB Connection Error:", err));
 
-// 📌 Get all meals
+// Fetch meals
 app.get("/api/meals", async (req, res) => {
   try {
     const meals = await Meal.find();
@@ -27,7 +27,7 @@ app.get("/api/meals", async (req, res) => {
   }
 });
 
-// 📌 Get a specific meal by name
+//Search a Soecific Meal
 app.get("/api/meals/:name", async (req, res) => {
   try {
     const mealName = req.params.name;
@@ -41,39 +41,39 @@ app.get("/api/meals/:name", async (req, res) => {
   }
 });
 
-// 📌 Add a meal
+//Add the Meal using API Call
 app.post("/api/meals", async (req, res) => {
   try {
     const { name, calories, protein, carbs, fat } = req.body;
     if (!name || !calories || !protein || !carbs || !fat) {
-      return res.status(400).json({ error: "⚠️ All fields are required" });
+      return res.status(400).json({ error: "All fields are required" });
     }
 
     const newMeal = new Meal({ name, calories, protein, carbs, fat });
     await newMeal.save();
 
-    res.status(201).json({ message: "✅ Meal added successfully!" });
+    res.status(201).json({ message: "Meal added successfully!" });
   } catch (err) {
-    res.status(500).json({ error: "⚠️ Failed to add meal", details: err.message });
+    res.status(500).json({ error: "Failed to add meal", details: err.message });
   }
 });
 
-// 📌 Add a custom meal
+//Add a Custom Meal
 app.post("/api/custom-meal", async (req, res) => {
   try {
     const { name, calories, protein, carbs, fat } = req.body;
     if (!name || !calories || !protein || !carbs || !fat) {
-      return res.status(400).json({ error: "⚠️ All fields are required" });
+      return res.status(400).json({ error: "All fields are required" });
     }
 
     const newMeal = new Meal({ name, calories, protein, carbs, fat });
     await newMeal.save();
 
-    res.status(201).json({ message: "✅ Custom meal added successfully!" });
+    res.status(201).json({ message: "Custom meal added successfully!" });
   } catch (error) {
-    res.status(500).json({ error: "⚠️ Failed to add custom meal", details: error.message });
+    res.status(500).json({ error: "Failed to add custom meal", details: error.message });
   }
 });
 
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

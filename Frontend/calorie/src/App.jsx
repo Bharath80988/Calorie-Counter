@@ -26,7 +26,6 @@ function App() {
   );
 }
 
-// Custom 404 Page
 function NotFound() {
   return (
     <div className="not-found">

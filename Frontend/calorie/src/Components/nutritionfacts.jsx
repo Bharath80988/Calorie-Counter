@@ -9,7 +9,7 @@ const NutritionPage = () => {
     fetch("http://localhost:3001/api/meals")
       .then((response) => response.json())
       .then((data) => {
-        console.log("Fetched Meals:", data); // Debugging
+        console.log("Fetched Meals:", data); 
         setFoodItems(data);
       })
       .catch((error) => console.error("Error fetching meals:", error));

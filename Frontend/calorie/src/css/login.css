@@ -22,7 +22,7 @@
   gap: 1rem;
   width: 300px;
   text-align: center;
-  backdrop-filter: blur(10px); /* Frosted glass effect */
+  backdrop-filter: blur(10px); 
 }
 
 
