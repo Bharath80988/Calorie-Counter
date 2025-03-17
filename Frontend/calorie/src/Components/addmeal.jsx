@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import "../css/addmeal.css"; // Import CSS file
-
+import "../css/addmeal.css"; 
 const AddMeal = () => {
     const [mealName, setMealName] = useState("");
     const [cuisine, setCuisine] = useState("");
@@ -15,7 +14,6 @@ const AddMeal = () => {
             return;
         }
 
-        // Search for products by name
         const searchUrl = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${mealName}&search_simple=1&json=1`;
 
         try {
@@ -28,11 +26,11 @@ const AddMeal = () => {
                 return;
             }
 
-            // Get the first matching product
+            
             const product = searchData.products[0];
             const productCode = product.code;
 
-            // Fetch product details
+    
             const productUrl = `https://world.openfoodfacts.org/api/v0/product/${productCode}.json`;
             const productResponse = await fetch(productUrl);
             const productData = await productResponse.json();
@@ -68,7 +66,7 @@ const AddMeal = () => {
         }
 
         try {
-            const response = await fetch("http://localhost:3001/api/meals", {  
+            const response = await fetch("https://calorie-counter-xp9i.onrender.com/api/meals", {  
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -88,7 +86,7 @@ const AddMeal = () => {
                 setSuccess("Meal added successfully!");
                 setError("");
             } else {
-                setError(`⚠️ ${data.error}`);
+                setError(` ${data.error}`);
             }
         } catch (err) {
             console.error("Error saving meal:", err);

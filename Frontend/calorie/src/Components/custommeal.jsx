@@ -25,7 +25,7 @@ const CustomMeal = () => {
         };
 
         try {
-            await axios.post("http://localhost:3001/api/custom-meal", newMeal);
+            await axios.post("https://calorie-counter-xp9i.onrender.com/api/custom-meal", newMeal);
             setMessage("Meal added successfully!");
             setMealName("");
             setCalories("");

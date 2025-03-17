@@ -6,7 +6,7 @@ const NutritionPage = () => {
   const [foodItems, setFoodItems] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3001/api/meals")
+    fetch("https://calorie-counter-xp9i.onrender.com/api/meals")
       .then((response) => response.json())
       .then((data) => {
         console.log("Fetched Meals:", data); 
